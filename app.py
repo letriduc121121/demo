@@ -9,6 +9,10 @@ import matplotlib.pyplot as plt
 # Đọc dữ liệu từ file customer_satisfaction.csv
 df = pd.read_csv('restaurant_customer_satisfaction.csv')
 
+# Hiển thị thông tin dữ liệu
+print("Dữ liệu gốc:")
+print(df.head())
+
 # Chia dữ liệu thành đặc trưng và nhãn
 X = df.drop('HighSatisfaction', axis=1)  # Các đặc trưng
 y = df['HighSatisfaction']  # Nhãn: Mức độ hài lòng cao
@@ -26,6 +30,10 @@ for column in categorical_columns:
     X_test[column] = le.transform(X_test[column])
     label_encoders[column] = le  # Lưu LabelEncoder cho từng cột
 
+# In dữ liệu sau khi mã hóa
+print("Dữ liệu sau khi mã hóa:")
+print(X_train.head())
+
 # Huấn luyện mô hình Random Forest
 rf_model = RandomForestClassifier(random_state=42)
 rf_model.fit(X_train, y_train)
@@ -34,6 +42,9 @@ rf_model.fit(X_train, y_train)
 y_pred_rf = rf_model.predict(X_test)
 accuracy_rf = accuracy_score(y_test, y_pred_rf)
 f1_rf = f1_score(y_test, y_pred_rf, average='weighted')
+
+print(f'Random Forest - Accuracy: {accuracy_rf}')
+print(f'Random Forest - F1-score: {f1_rf}')
 
 # Huấn luyện mô hình SVM
 svm_model = SVC(random_state=42)
@@ -44,10 +55,19 @@ y_pred_svm = svm_model.predict(X_test)
 accuracy_svm = accuracy_score(y_test, y_pred_svm)
 f1_svm = f1_score(y_test, y_pred_svm, average='weighted')
 
-# In ra kết quả
-print(f'Kết quả mô hình:')
-print(f'Random Forest - Accuracy: {accuracy_rf:.2f}, F1-score: {f1_rf:.2f}')
-print(f'SVM - Accuracy: {accuracy_svm:.2f}, F1-score: {f1_svm:.2f}')
+print(f'SVM - Accuracy: {accuracy_svm}')
+print(f'SVM - F1-score: {f1_svm}')
+
+# So sánh kết quả
+if accuracy_rf > accuracy_svm:
+    print("Mô hình Random Forest có độ chính xác cao hơn.")
+else:
+    print("Mô hình SVM có độ chính xác cao hơn.")
+
+if f1_rf > f1_svm:
+    print("Mô hình Random Forest có F1-score cao hơn.")
+else:
+    print("Mô hình SVM có F1-score cao hơn.")
 
 # Tạo biểu đồ so sánh
 labels = ['Random Forest', 'SVM']
